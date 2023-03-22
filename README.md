@@ -16,7 +16,7 @@
 ## Skills
 * JUnit : 테스트 자동화
 * Lombok : 코드 간략 표현
-* Redis : 고성능 키-값 저장소
+* Redis : 인메모리 데이터 구조의 키-값 저장소
 * Design patterns
   * 오픈 API 추가 및 교체를 위한 Adapter pattern, Template pattern
   * 전반적인 Strategy pattern
@@ -34,7 +34,7 @@
 * Multi Module 
   * common-api : config, error, entity, repository, utils
   * external-api : 외부 api 호출 등 외부 로직 관련 모듈 (server.port=8091)
-  * internal-api : 내부 로직 관련 모듈 (server.port=8092)
+  * internal-api : 내부 DB만 활용하는 내부 로직 관련 모듈 (server.port=8092)
 ```bash
 search/
 ├── common-api
@@ -77,6 +77,7 @@ search/
 * http://localhost:8091/api/v1/list?query=더글로리&sort=acc
   * query : 검색 키워드  ex) 더글로리
   * sort : acc(정확도순), date(최신순)
+* http://localhost:8092/api/v1/top/list
 
 
 ## Let's try it!
