@@ -25,6 +25,8 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+        implementation 'org.springframework.boot:spring-boot-starter-cache'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
         testImplementation 'org.junit.jupiter:junit-jupiter'
         testImplementation 'org.mockito:mockito-core'
 //        testImplementation group: 'junit', name: 'junit', version: '4.12'
@@ -46,7 +48,6 @@ project(':common-api') {
 project(':external-api') {
     dependencies {
         implementation project(':common-api')
-        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     }
 }
 

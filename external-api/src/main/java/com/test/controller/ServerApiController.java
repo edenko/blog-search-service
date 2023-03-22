@@ -1,11 +1,16 @@
 package com.test.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.dto.*;
 import com.test.search.error.CustomExceptionHandler;
 import com.test.search.service.KeywordsService;
 import com.test.service.Api1Service;
 import com.test.service.Api2Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
@@ -25,6 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/")
 public class ServerApiController {
+    private final CacheManager cacheManager;
     private final KeywordsService keywordsService;
     private final Api1Service api1Service;
     private final Api2Service api2Service;
@@ -43,6 +49,12 @@ public class ServerApiController {
          */
         keywordsService.countUpForKeyword(query.trim().toLowerCase());
 
+        String cacheKey = generateCacheKey(query, sort, pageable);
+//        Cache.ValueWrapper cachedValue = cacheManager.getCache("fetchApiDataCache").get(cacheKey);
+//        if (cachedValue != null) {
+//            return CompletableFuture.completedFuture((Page<BlogDataDto>) cachedValue.get());
+//        }
+
         String sortConvert;
         CompletableFuture<Page<BlogDataDto>> response;
         try {
@@ -52,10 +64,17 @@ public class ServerApiController {
             sortConvert = "acc".equals(sort) ? "sim" : "date";
             response = fetchApi2Data(query, sortConvert, pageable);
         }
-        return response;
+
+        return response.thenApply(page -> {
+            cacheManager.getCache("fetchApiDataCache").put(cacheKey, page);
+            return page;
+        });
     }
 
-    @GetMapping("/list/1")
+    private String generateCacheKey(String query, String sort, Pageable pageable) {
+        return String.format("query:%s,sort:%s,pageable:%s", query, sort, pageable);
+    }
+
     public CompletableFuture<Page<BlogDataDto>> fetchApi1Data(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "sort", required = false, defaultValue = "accuracy") String sort,
@@ -80,7 +99,6 @@ public class ServerApiController {
         return CompletableFuture.completedFuture(new PageImpl<>(blogDataDtoList, pageable, count));
     }
 
-    @GetMapping("/list/2")
     public CompletableFuture<Page<BlogDataDto>> fetchApi2Data(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "sort", required = false, defaultValue = "sim") String sort,

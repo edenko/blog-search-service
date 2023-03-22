@@ -18,6 +18,7 @@ class Api2ServiceTest {
     @InjectMocks
     private Api2Service api2Service;
 
+    // unsafe
     @BeforeEach
     void setUp() {
         api2Service.key = "73LmIgZj7eSJkaWEdjor";

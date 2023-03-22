@@ -17,12 +17,13 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 public class Api1Service {
+
     @Value("${kakao.key}")
-    protected String key;
+    public String key;
     @Value("${kakao.url}")
-    protected String url;
+    public String url;
     @Value("${kakao.blog.url}")
-    protected String blog;
+    public String blog;
 
     @Async("customExecutor")
     public CompletableFuture<Map> fetchApi1Data(

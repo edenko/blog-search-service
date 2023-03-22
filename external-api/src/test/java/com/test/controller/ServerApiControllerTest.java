@@ -2,14 +2,24 @@ package com.test.controller;
 
 import com.test.dto.BlogDataDto;
 import com.test.search.error.CustomExceptionHandler;
+import com.test.service.Api1Service;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -21,11 +31,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@AutoConfigureMockMvc
 class ServerApiControllerTest {
 
     @Autowired
     private ServerApiController serverApiController;
+    @InjectMocks
+    private ServerApiController serverApiControllerMock;
+    @InjectMocks
+    private Api1Service api1Service;
+    @Mock
+    private CacheManager cacheManager;
 
     @Test
     @DisplayName("api1 통신 에러 발생, api2 호출 테스트")
@@ -85,4 +103,25 @@ class ServerApiControllerTest {
 
         executorService.shutdown();
     }
+
+    @Test
+    @DisplayName("Redis 캐시 테스트 - 구현 중")
+    public void testCachingBehavior() throws Exception {
+        // give
+        List<BlogDataDto> blogDataDtoList = new ArrayList<>();
+        BlogDataDto dto = new BlogDataDto();
+        dto.setTitle("Test Title");
+        dto.setContents("Test Contents");
+        blogDataDtoList.add(dto);
+        Page<BlogDataDto> page = new PageImpl<>(blogDataDtoList, PageRequest.of(0, 10), 1);
+
+        // when
+//        Cache cache = mock(Cache.class);
+//        when(cacheManager.getCache("fetchApiDataCache")).thenReturn(cache);
+//        CompletableFuture<Page<BlogDataDto>> response = serverApiControllerMock.fetchApiData("test", "acc", PageRequest.of(0, 10));
+
+        // then
+//        verify(serverApiControllerMock, times(1)).fetchApi1Data(any(), any(), any());
+    }
+
 }

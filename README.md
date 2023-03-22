@@ -17,6 +17,7 @@
 * JUnit : 테스트 자동화
 * Lombok : 코드 간략 표현
 * Redis : 인메모리 데이터 구조의 키-값 저장소
+* CompletableFuture : part of Java Concurrency API
 * Design patterns
   * 오픈 API 추가 및 교체를 위한 Adapter pattern, Template pattern
   * 전반적인 Strategy pattern

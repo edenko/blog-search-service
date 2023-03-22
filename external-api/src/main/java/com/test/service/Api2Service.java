@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 public class Api2Service {
+
     @Value("${naver.key}")
     protected String key;
     @Value("${naver.key2}")
